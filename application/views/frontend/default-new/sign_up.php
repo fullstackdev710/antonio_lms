@@ -1,5 +1,5 @@
-<?php if(get_frontend_settings('recaptcha_status')): ?>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<?php if (get_frontend_settings('recaptcha_status')) : ?>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <?php endif; ?>
 
 <!---------- Header Section End  ---------->
@@ -37,6 +37,44 @@
                             </div>
                         </div>
                         <div class="mb-4">
+                            <h5><?php echo get_phrase('Company Name'); ?></h5>
+                            <div class="position-relative">
+                                <i class="fa-solid fa-user"></i>
+                                <input class="form-control" id="company_name" type="text" name="company_name" placeholder="<?php echo get_phrase('Enter your company name'); ?>" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h5><?php echo get_phrase('Fiscal Nummber'); ?></h5>
+                            <div class="position-relative">
+                                <i class="fa-solid fa-user"></i>
+                                <input class="form-control" id="fiscal_number" type="text" name="fiscal_number" placeholder="<?php echo get_phrase('Enter your fiscal number'); ?>" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h5><?php echo get_phrase('Location'); ?></h5>
+                            <div class="position-relative">
+                                <i class="fa-solid fa-user"></i>
+                                <input class="form-control" id="location" type="text" name="location" placeholder="<?php echo get_phrase('Enter your location'); ?>" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <h5><?php echo get_phrase('Economic Code'); ?></h5>
+                            <div class="position-relative">
+                                <i class="fa-solid fa-user"></i>
+                                <select class="form-select form-control" id="economic_code" name="economic_code" required>
+                                    <option value="CAE 45"><?php echo get_phrase('CAE 45'); ?></option>
+                                    <option value="CAE 46"><?php echo get_phrase('CAE 46'); ?></option>
+                                    <option value="CAE 47"><?php echo get_phrase('CAE 47'); ?></option>
+                                    <option value="CAE 56"><?php echo get_phrase('CAE 56'); ?></option>
+                                    <option value="CAE 79"><?php echo get_phrase('CAE 79'); ?></option>
+                                    <option value="CAE 95"><?php echo get_phrase('CAE 95'); ?></option>
+                                    <option value="CAE 96"><?php echo get_phrase('CAE 96'); ?></option>
+                                    <option value="Outro"><?php echo get_phrase('Outro'); ?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
                             <h5><?php echo get_phrase('Password') ?></h5>
                             <div class="position-relative">
                                 <i class="fa-solid fa-key"></i>
@@ -45,13 +83,23 @@
                             </div>
                         </div>
 
-                        <?php if(get_settings('allow_instructor')): ?>
+                        <div class="mb-4">
+                            <h5><?php echo get_phrase('Retype Password') ?></h5>
+                            <div class="position-relative">
+                                <i class="fa-solid fa-key"></i>
+                                <i class="fa-solid fas fa-eye cursor-pointer" onclick="if($('#retype_password').attr('type') == 'text'){$('#retype_password').attr('type', 'password');}else{$('#retype_password').attr('type', 'text');} $(this).toggleClass('fa-eye'); $(this).toggleClass('fa-eye-slash') " style="right: 20px; left: unset;"></i>
+                                <input class="form-control" id="retype_password" type="password" placeholder="<?php echo get_phrase('Enter your valid password'); ?>" required>
+                                <span id='password_message'></span>
+                            </div>
+                        </div>
+
+                        <?php if (get_settings('allow_instructor')) : ?>
                             <div class="mb-4">
-                                <input id="instructor" type="checkbox" onchange="$('#become-instructor-fields').toggle()" name="instructor" value="yes" <?php echo isset($_GET['instructor']) ? 'checked':''; ?>>
+                                <input id="instructor" type="checkbox" onchange="$('#become-instructor-fields').toggle()" name="instructor" value="yes" <?php echo isset($_GET['instructor']) ? 'checked' : ''; ?>>
                                 <label for="instructor"><?php echo get_phrase('Apply to Become an instructor'); ?></label>
                             </div>
 
-                            <div id="become-instructor-fields" class="<?php echo isset($_GET['instructor']) ?  '':'d-hidden'; ?>">
+                            <div id="become-instructor-fields" class="<?php echo isset($_GET['instructor']) ?  '' : 'd-hidden'; ?>">
                                 <div class="mb-4">
                                     <h5><?php echo get_phrase('Phone'); ?></h5>
                                     <div class="position-relative">
@@ -75,10 +123,10 @@
                             </div>
                         <?php endif; ?>
 
-                        <?php if(get_frontend_settings('recaptcha_status')): ?>
+                        <?php if (get_frontend_settings('recaptcha_status')) : ?>
                             <div class="g-recaptcha" data-sitekey="<?php echo get_frontend_settings('recaptcha_sitekey'); ?>"></div>
                         <?php endif; ?>
-                        
+
                         <div class="log-in">
                             <button type="submit" class="btn btn-primary">
                                 <?php echo get_phrase('Sign Up') ?>
@@ -97,7 +145,7 @@
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <!-- <button type="button" class="btn btn-primary"><a href="#"><img loading="lazy" src="image/facebook.png"> Facebook</a></button> -->
-                                <?php if(get_settings('fb_social_login')) include "facebook_login.php"; ?>
+                                <?php if (get_settings('fb_social_login')) include "facebook_login.php"; ?>
                             </div>
                         </div>
                     </div>
@@ -106,3 +154,17 @@
         </div>
     </div>
 </section>
+
+<script>
+    $('#password, #retype_password').on('keyup', function() {
+        if ($('#password').val() == $('#retype_password').val()) {
+            $('#password_message').html('Matching').css('color', 'green');
+
+            $('button[type="submit"]').prop('disabled', false);
+        } else {
+            $('#password_message').html('Not Matching').css('color', 'red');
+
+            $('button[type="submit"]').prop('disabled', true);
+        }
+    });
+</script>

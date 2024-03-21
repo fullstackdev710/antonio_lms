@@ -164,6 +164,24 @@ class Crud_model extends CI_Model
         return $this->db->get('enrol');
     }
 
+    public function get_all_student_status($timestamp_start = "", $timestamp_end = "")
+    {
+        $query = $this->db
+            ->select('users.last_login as last_logged, users.first_name as first_name, users.last_name as last_name, users.date_added as signup_date, enrol.date_added as course_started, course.title as course_name, watch_histories.course_progress as course_progress, watch_histories.completed_date as course_completed_date')
+            ->from('users')
+            ->join('enrol', 'users.id = enrol.user_id', 'left')
+            ->join('course', 'enrol.course_id = course.id', 'left')
+            ->join('watch_histories', 'course.id = watch_histories.course_id and users.id = watch_histories.student_id', 'left')
+            ->where('role_id', 2)
+            ->where('users.date_added >=', $timestamp_start)
+            ->where('users.date_added <=', $timestamp_end)
+            ->get();
+
+        $result = $query->result_array();
+
+        return $result;
+    }
+
     public function enrol_history_by_date_range($timestamp_start = "", $timestamp_end = "")
     {
         $this->db->order_by('date_added', 'desc');

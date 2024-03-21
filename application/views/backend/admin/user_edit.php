@@ -1,10 +1,10 @@
 <?php
-    $user_data = $this->db->get_where('users', array('id' => $user_id))->row_array();
-    $social_links = json_decode($user_data['social_links'], true);
-    $payment_keys = json_decode($user_data['payment_keys'], true);
-    $paypal_keys = $payment_keys['paypal'];
-    $stripe_keys = $payment_keys['stripe'];
-    $razorpay_keys = $payment_keys['razorpay'];
+$user_data = $this->db->get_where('users', array('id' => $user_id))->row_array();
+$social_links = json_decode($user_data['social_links'], true);
+$payment_keys = json_decode($user_data['payment_keys'], true);
+$paypal_keys = $payment_keys['paypal'];
+$stripe_keys = $payment_keys['stripe'];
+$razorpay_keys = $payment_keys['razorpay'];
 ?>
 <div class="row ">
     <div class="col-xl-12">
@@ -22,7 +22,7 @@
 
                 <h4 class="header-title mb-3"><?php echo get_phrase('student_edit_form'); ?></h4>
 
-                <form class="required-form" action="<?php echo site_url('admin/users/edit/'.$user_id); ?>" enctype="multipart/form-data" method="post">
+                <form class="required-form" action="<?php echo site_url('admin/users/edit/' . $user_id); ?>" enctype="multipart/form-data" method="post">
                     <div id="progressbarwizard">
                         <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
                             <li class="nav-item">
@@ -78,9 +78,42 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label" for="company_name"><?php echo get_phrase('company_name'); ?> <span class="required">*</span> </label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" id="company_name" name="company_name" value="<?php echo $user_data['company_name']; ?>" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label" for="fiscal_number"><?php echo get_phrase('fiscal_number'); ?> <span class="required">*</span> </label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" id="fiscal_number" name="fiscal_number" value="<?php echo $user_data['fiscal_number']; ?>" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label" for="location"><?php echo get_phrase('location'); ?> <span class="required">*</span> </label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" id="location" name="location" value="<?php echo $user_data['location']; ?>" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label class="col-md-3 col-form-label" for="economic_code"><?php echo get_phrase('economic_code'); ?> <span class="required">*</span> </label>
+                                            <div class="col-md-9">
+                                                <select class="form-select form-control" id="economic_code" name="economic_code" required>
+                                                    <option value="CAE 45" <?= $user_data['economic_code'] == "CAE 45" ? "selected" : "" ?>><?php echo get_phrase('CAE 45: Comércio, manutenção e reparação, de veículos automóveis e motociclos'); ?></option>
+                                                    <option value="CAE 46" <?= $user_data['economic_code'] == "CAE 46" ? "selected" : "" ?>><?php echo get_phrase('CAE 46: Comércio por grosso (inclui agentes), exceto de veículos automóveis e motociclos'); ?></option>
+                                                    <option value="CAE 47" <?= $user_data['economic_code'] == "CAE 47" ? "selected" : "" ?>><?php echo get_phrase('CAE 47: Comércio a retalho, exceto de veículos automóveis e motociclos;'); ?></option>
+                                                    <option value="CAE 56" <?= $user_data['economic_code'] == "CAE 56" ? "selected" : "" ?>><?php echo get_phrase('CAE 56: Restauração e similares'); ?></option>
+                                                    <option value="CAE 79" <?= $user_data['economic_code'] == "CAE 79" ? "selected" : "" ?>><?php echo get_phrase('CAE 79: Agências de Viagens, operadores turísticos, outros serviços de reservas e atividades relacionadas (com estabelecimento)'); ?></option>
+                                                    <option value="CAE 95" <?= $user_data['economic_code'] == "CAE 95" ? "selected" : "" ?>><?php echo get_phrase('CAE 95: Reparação de computadores e de bens de uso pessoal e doméstico'); ?></option>
+                                                    <option value="CAE 96" <?= $user_data['economic_code'] == "CAE 96" ? "selected" : "" ?>><?php echo get_phrase('CAE 96: Outras atividades de serviços pessoais.'); ?></option>
+                                                    <option value="Outro" <?= $user_data['economic_code'] == "Outro" ? "selected" : "" ?>><?php echo get_phrase('Outro'); ?></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="linkedin_link"><?php echo get_phrase('biography'); ?></label>
                                             <div class="col-md-9">
-                                                <textarea name="biography" id = "summernote-basic" class="form-control"><?php echo $user_data['biography']; ?></textarea>
+                                                <textarea name="biography" id="summernote-basic" class="form-control"><?php echo $user_data['biography']; ?></textarea>
                                             </div>
                                         </div>
 
@@ -97,23 +130,23 @@
                                                 <input type="text" class="form-control" value="<?php echo $user_data['address']; ?>" id="address" name="address">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="form-group row mb-3">
                                             <label class="col-md-3 col-form-label" for="user_image"><?php echo get_phrase('user_image'); ?></label>
                                             <div class="col-md-9">
                                                 <div class="d-flex">
-                                                  <div class="">
-                                                      <img class = "rounded-circle img-thumbnail" src="<?php echo $this->user_model->get_user_image_url($user_data['id']);?>" alt="" style="height: 50px; width: 50px;">
-                                                  </div>
-                                                  <div class="flex-grow-1 mt-1 pl-3">
-                                                      <div class="input-group">
-                                                          <div class="custom-file">
-                                                              <input type="file" class="custom-file-input" name = "user_image" id="user_image" onchange="changeTitleOfImageUploader(this)" accept="image/*">
-                                                              <label class="custom-file-label ellipsis" for="user_image"><?php echo get_phrase('choose_user_image'); ?></label>
-                                                          </div>
-                                                      </div>
-                                                  </div>
-                                              </div>
+                                                    <div class="">
+                                                        <img class="rounded-circle img-thumbnail" src="<?php echo $this->user_model->get_user_image_url($user_data['id']); ?>" alt="" style="height: 50px; width: 50px;">
+                                                    </div>
+                                                    <div class="flex-grow-1 mt-1 pl-3">
+                                                        <div class="input-group">
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input" name="user_image" id="user_image" onchange="changeTitleOfImageUploader(this)" accept="image/*">
+                                                                <label class="custom-file-label ellipsis" for="user_image"><?php echo get_phrase('choose_user_image'); ?></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div> <!-- end col -->
@@ -157,33 +190,33 @@
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
-                            
+
                             <div class="tab-pane" id="payment_info">
                                 <div class="row">
                                     <div class="col-12">
                                         <?php $payment_gateways = $this->db->get('payment_gateways')->result_array();
-                                            foreach($payment_gateways as $key => $payment_gateway):
+                                        foreach ($payment_gateways as $key => $payment_gateway) :
                                             $keys = json_decode($payment_gateway['keys'], true);
                                             $user_keys = json_decode($user_data['payment_keys'], true);
-                                            ?>
-                                            <div class="<?php if($payment_gateway['status'] != 1 || !addon_status($payment_gateway['identifier']) && $payment_gateway['is_addon'] == 1) echo 'd-none'; ?>">
+                                        ?>
+                                            <div class="<?php if ($payment_gateway['status'] != 1 || !addon_status($payment_gateway['identifier']) && $payment_gateway['is_addon'] == 1) echo 'd-none'; ?>">
                                                 <h4><?php echo get_phrase($payment_gateway['title']); ?></h4>
-                                                <?php foreach($keys as $index => $value):
-                                                    if(array_key_exists($payment_gateway['identifier'], $user_keys)){
-                                                        if(array_key_exists($index, $user_keys[$payment_gateway['identifier']])){
+                                                <?php foreach ($keys as $index => $value) :
+                                                    if (array_key_exists($payment_gateway['identifier'], $user_keys)) {
+                                                        if (array_key_exists($index, $user_keys[$payment_gateway['identifier']])) {
                                                             $value = $user_keys[$payment_gateway['identifier']][$index];
-                                                        }else{
+                                                        } else {
                                                             $value = '';
                                                         }
-                                                    }else{
+                                                    } else {
                                                         $value = '';
                                                     }
-                                                    ?>
+                                                ?>
 
                                                     <div class="form-group row mb-3">
-                                                        <label class="col-md-3 col-form-label" for="<?php echo $payment_gateway['identifier'].$index; ?>"> <?php echo get_phrase($index); ?></label>
+                                                        <label class="col-md-3 col-form-label" for="<?php echo $payment_gateway['identifier'] . $index; ?>"> <?php echo get_phrase($index); ?></label>
                                                         <div class="col-md-9">
-                                                            <input type="text" id="<?php echo $payment_gateway['identifier'].$index; ?>" name="gateways[<?php echo $payment_gateway['identifier']; ?>][<?php echo $index; ?>]" value="<?php echo $value; ?>" class="form-control">
+                                                            <input type="text" id="<?php echo $payment_gateway['identifier'] . $index; ?>" name="gateways[<?php echo $payment_gateway['identifier']; ?>][<?php echo $index; ?>]" value="<?php echo $value; ?>" class="form-control">
                                                             <small><?php echo get_phrase("required_for_instructor"); ?></small>
                                                         </div>
                                                     </div>
@@ -194,7 +227,7 @@
                                     </div> <!-- end col -->
                                 </div> <!-- end row -->
                             </div>
-                            
+
                             <div class="tab-pane" id="finish">
                                 <div class="row">
                                     <div class="col-12">

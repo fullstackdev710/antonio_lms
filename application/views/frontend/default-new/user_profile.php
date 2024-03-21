@@ -19,10 +19,12 @@
                     <div class="profile-ful-body common-card">
                         <div class="profile-parrent mt-5">
                             <div class="profile-child">
-                               <a href="#"><img loading="lazy" src="<?php echo $this->user_model->get_user_image_url($user_details['id']); ?>"></a> 
+                                <a href="#"><img loading="lazy" src="<?php echo $this->user_model->get_user_image_url($user_details['id']); ?>"></a>
                                 <div class="child-text">
-                                    <a href="#"><h5><?php echo get_phrase('Profile Photo') ?></h5></a>
-                                    <p><?php echo get_phrase('Update your profile photo and personal details'); ?></p>  
+                                    <a href="#">
+                                        <h5><?php echo get_phrase('Profile Photo') ?></h5>
+                                    </a>
+                                    <p><?php echo get_phrase('Update your profile photo and personal details'); ?></p>
                                 </div>
                             </div>
 
@@ -62,6 +64,44 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                                             <input type="text" class="form-control bg-white-2 text-14px" name="last_name" placeholder="<?php echo site_phrase('last_name'); ?>" value="<?php echo $user_details['last_name']; ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mt-3">
+                                        <label class="text-dark fw-600" for="company_name"><?php echo site_phrase('company_name'); ?></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="form-control bg-white-2 text-14px" id="company_name" placeholder="<?php echo site_phrase('company_name'); ?>" name="company_name" value="<?php echo $user_details['company_name']; ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mt-3">
+                                        <label class="text-dark fw-600" for="fiscal_number"><?php echo get_phrase('fiscal_number'); ?></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="form-control bg-white-2 text-14px" id="fiscal_number" name="fiscal_number" value="<?php echo $user_details['fiscal_number']; ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                        <label class="text-dark fw-600" for="location"><?php echo get_phrase('location'); ?></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" class="form-control bg-white-2 text-14px" id="location" name="location" value="<?php echo $user_details['location']; ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                        <label class="text-dark fw-600" for="economic_code"><?php echo get_phrase('economic_code'); ?></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <select class="form-select form-control bg-white-2 text-14px" id="economic_code" name="economic_code" required>
+                                                <option value="CAE 45" <?= $user_details['economic_code'] == "CAE 45" ? "selected" : "" ?>><?php echo get_phrase('CAE 45: Comércio, manutenção e reparação, de veículos automóveis e motociclos'); ?></option>
+                                                <option value="CAE 46" <?= $user_details['economic_code'] == "CAE 46" ? "selected" : "" ?>><?php echo get_phrase('CAE 46: Comércio por grosso (inclui agentes), exceto de veículos automóveis e motociclos'); ?></option>
+                                                <option value="CAE 47" <?= $user_details['economic_code'] == "CAE 47" ? "selected" : "" ?>><?php echo get_phrase('CAE 47: Comércio a retalho, exceto de veículos automóveis e motociclos;'); ?></option>
+                                                <option value="CAE 56" <?= $user_details['economic_code'] == "CAE 56" ? "selected" : "" ?>><?php echo get_phrase('CAE 56: Restauração e similares'); ?></option>
+                                                <option value="CAE 79" <?= $user_details['economic_code'] == "CAE 79" ? "selected" : "" ?>><?php echo get_phrase('CAE 79: Agências de Viagens, operadores turísticos, outros serviços de reservas e atividades relacionadas (com estabelecimento)'); ?></option>
+                                                <option value="CAE 95" <?= $user_details['economic_code'] == "CAE 95" ? "selected" : "" ?>><?php echo get_phrase('CAE 95: Reparação de computadores e de bens de uso pessoal e doméstico'); ?></option>
+                                                <option value="CAE 96" <?= $user_details['economic_code'] == "CAE 96" ? "selected" : "" ?>><?php echo get_phrase('CAE 96: Outras atividades de serviços pessoais.'); ?></option>
+                                                <option value="Outro" <?= $user_details['economic_code'] == "Outro" ? "selected" : "" ?>><?php echo get_phrase('Outro'); ?></option>
+                                            </select>
                                         </div>
                                     </div>
 

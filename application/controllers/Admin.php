@@ -561,6 +561,58 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
+    public function student_status($param1 = "")
+    {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        // CHECK ACCESS PERMISSION
+        check_permission('revenue');
+
+        if ($param1 != "") {
+            $date_range                   = $this->input->get('date_range');
+            $date_range                   = explode(" - ", $date_range);
+            $page_data['timestamp_start'] = strtotime($date_range[0] . ' 00:00:00');
+            $page_data['timestamp_end']   = strtotime($date_range[1] . ' 23:59:59');
+        } else {
+            $page_data['timestamp_start'] = strtotime(date("m/01/Y 00:00:00"));
+            $page_data['timestamp_end']   = strtotime(date("m/t/Y 23:59:59"));
+        }
+
+        $page_data['page_name'] = 'student_status';
+        $page_data['students'] = $this->crud_model->get_all_student_status($page_data['timestamp_start'], $page_data['timestamp_end']);
+        $page_data['page_title'] = get_phrase('student_status');
+
+        $this->load->view('backend/index', $page_data);
+    }
+
+    public function export_student_status()
+    {
+        if ($this->session->userdata('admin_login') != true) {
+            redirect(site_url('login'), 'refresh');
+        }
+
+        // CHECK ACCESS PERMISSION
+        check_permission('revenue');
+
+        if ($this->input->post('date_range') != "") {
+            $date_range                   = $this->input->post('date_range');
+            $date_range                   = explode(" - ", $date_range);
+            $datetime_start = DateTime::createFromFormat('d F, Y H:i:s', $date_range[0] . ' 00:00:00');
+            $datetime_end = DateTime::createFromFormat('d F, Y H:i:s', $date_range[1] . ' 23:59:59');
+            $page_data['timestamp_start'] = strtotime($datetime_start->format('m/d/Y H:i:s'));
+            $page_data['timestamp_end']   = strtotime($datetime_end->format('m/d/Y H:i:s'));
+        } else {
+            $page_data['timestamp_start'] = strtotime(date("m/01/Y 00:00:00"));
+            $page_data['timestamp_end']   = strtotime(date("m/t/Y 23:59:59"));
+        }
+
+        $export_data = $this->crud_model->get_all_student_status($page_data['timestamp_start'], $page_data['timestamp_end']);
+
+        echo json_encode($export_data);
+    }
+
     function invoice($payout_id = "")
     {
         if ($this->session->userdata('admin_login') != true) {
@@ -735,7 +787,6 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-
     public function notification_settings($param1 = "", $param2 = "", $param3 = "")
     {
         if ($param1 == 'smtp_settings') {
@@ -759,7 +810,6 @@ class Admin extends CI_Controller
         $page_data['page_title'] = get_phrase('Notification settings');
         $this->load->view('backend/index', $page_data);
     }
-
 
     function edit_email_template($id = "", $param2 = "")
     {
@@ -1306,7 +1356,6 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-
     // Language Functions
     public function manage_language($param1 = '', $param2 = '', $param3 = '')
     {
@@ -1446,7 +1495,6 @@ class Admin extends CI_Controller
             redirect(site_url('admin/instructor_payout'), 'refresh');
         }
     }
-
 
     // PAYPAL CHECKOUT ACTIONS
     public function paypal_payment($payout_id = "", $paypalPaymentID = "", $paypalPaymentToken = "", $paypalPayerID = "")
@@ -1757,7 +1805,6 @@ class Admin extends CI_Controller
         $this->load->view('backend/index', $page_data);
     }
 
-
     public function instructor_application($param1 = "", $param2 = "")
     { // param1 is the status and param2 is the application id
         if ($this->session->userdata('admin_login') != 1)
@@ -1775,7 +1822,6 @@ class Admin extends CI_Controller
         $page_data['pending_applications'] = $this->user_model->get_pending_applications();
         $this->load->view('backend/index', $page_data);
     }
-
 
     // INSTRUCTOR PAYOUT SECTION
     public function instructor_payout($param1 = "")
@@ -3100,7 +3146,7 @@ class Admin extends CI_Controller
 
 
 
-            
+
             redirect(site_url('admin/newsletters'), 'refresh');
         } elseif ($type == 'stop') {
             // Remove Cron Job
@@ -3216,45 +3262,46 @@ class Admin extends CI_Controller
         echo get_phrase("BigBlueButton Meeting has been updated");
     }
 
-    function start_bbb_meeting($course_id = ""){
+    function start_bbb_meeting($course_id = "")
+    {
         $course_details = $this->crud_model->get_courses($course_id)->row_array();
         $bbb_meeting = $this->db->where('course_id', $course_id)->get('bbb_meetings');
-        $current_url = site_url('admin/course_form/course_edit/'.$course_id.'?tab=bbb-live-class');
+        $current_url = site_url('admin/course_form/course_edit/' . $course_id . '?tab=bbb-live-class');
 
-        if($bbb_meeting->num_rows() > 0){
+        if ($bbb_meeting->num_rows() > 0) {
             $bbb_meeting = $bbb_meeting->row_array();
             //Sanitize API URL START
-                $api_url = get_settings('bbb_setting', true)['endpoint'] ?? '';
-                // Parse the URL
-                $parsed_url = parse_url($api_url);
-                // Remove the 'api' part if it exists in the path
-                $path = rtrim(str_replace('/api', '', $parsed_url['path']), '/');
-                // Rebuild the URL
-                $api_url = $parsed_url['scheme'] . '://' . $parsed_url['host'] . $path;
+            $api_url = get_settings('bbb_setting', true)['endpoint'] ?? '';
+            // Parse the URL
+            $parsed_url = parse_url($api_url);
+            // Remove the 'api' part if it exists in the path
+            $path = rtrim(str_replace('/api', '', $parsed_url['path']), '/');
+            // Rebuild the URL
+            $api_url = $parsed_url['scheme'] . '://' . $parsed_url['host'] . $path;
             //Sanitize API URL END
-            
+
             //Create BBB meeting START
-                $query_data = http_build_query([
-                    'name' => $course_details['title'],
-                    'meetingID' => $bbb_meeting['meeting_id'],
-                    'attendeePW' => $bbb_meeting['viewer_pw'],
-                    'moderatorPW' => $bbb_meeting['moderator_pw'],
-                    'redirectURL' => $current_url,
-                ]);
-                $response = $this->crud_model->callBbbApi('create', $query_data, $bbb_meeting['meeting_id']);
+            $query_data = http_build_query([
+                'name' => $course_details['title'],
+                'meetingID' => $bbb_meeting['meeting_id'],
+                'attendeePW' => $bbb_meeting['viewer_pw'],
+                'moderatorPW' => $bbb_meeting['moderator_pw'],
+                'redirectURL' => $current_url,
+            ]);
+            $response = $this->crud_model->callBbbApi('create', $query_data, $bbb_meeting['meeting_id']);
             //Create BBB meeting END
 
             // Handle response & redirect to meeting url
             if ($response) {
                 $xml = simplexml_load_string($response);
                 $returncode = (string)$xml->returncode;
-                
+
                 if ($returncode == 'SUCCESS') {
                     $moderator_details = $this->user_model->get_all_user($this->session->userdata('user_id'))->row_array();
                     //JOIN AS A viewer
-                    $full_name = $moderator_details['first_name'].' '.$moderator_details['last_name']; // The full name of the participant
+                    $full_name = $moderator_details['first_name'] . ' ' . $moderator_details['last_name']; // The full name of the participant
                     $role = 'moderator'; // The role of the user (either "viewer" or "moderator")
-                    $join_url = $api_url."/api/join?meetingID=".$bbb_meeting['meeting_id']."&fullName=$full_name&password=".$bbb_meeting['moderator_pw']."&joinViaHtml5=true&redirect=true&joinParam[role]=$role";
+                    $join_url = $api_url . "/api/join?meetingID=" . $bbb_meeting['meeting_id'] . "&fullName=$full_name&password=" . $bbb_meeting['moderator_pw'] . "&joinViaHtml5=true&redirect=true&joinParam[role]=$role";
                     echo $join_url;
                     return;
                 } else {
@@ -3263,23 +3310,23 @@ class Admin extends CI_Controller
             } else {
                 $this->session->set_flashdata('error_message', get_phrase("Failed to connect to BigBlueButton API"));
             }
-
-        }else{
+        } else {
             $this->session->set_flashdata('error_message', get_phrase("Please save your meeting info first"));
         }
         echo $current_url;
     }
 
-    function change_course_author($course_id = ""){
-        if(isset($_POST) && count($_POST) > 0){
-            if($_POST['instructor_id'] > 0){
+    function change_course_author($course_id = "")
+    {
+        if (isset($_POST) && count($_POST) > 0) {
+            if ($_POST['instructor_id'] > 0) {
                 $this->db->where('id', $course_id)->update('course', ['creator' => $_POST['instructor_id']]);
                 $this->session->set_flashdata('flash_message', get_phrase("Course author changed successfully"));
-            }else{
+            } else {
                 $this->session->set_flashdata('error_message', get_phrase("Something is wrong"));
             }
-            redirect(site_url('admin/course_form/course_edit/'.$course_id.'?tab=basic'), 'refresh');
-        }else{
+            redirect(site_url('admin/course_form/course_edit/' . $course_id . '?tab=basic'), 'refresh');
+        } else {
             $page_data['instructors'] = $this->user_model->get_instructor()->result_array();
             $page_data['course_details'] = $this->crud_model->get_course_by_id($course_id)->row_array();
             $this->load->view('backend/admin/change_course_author', $page_data);
